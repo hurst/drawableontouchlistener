@@ -37,6 +37,8 @@ public abstract class DrawableOnTouchListener implements View.OnTouchListener {
             final int y = (int) event.getY();
 
             for(Position pos : Position.values()) {
+                if(drawables[pos.ordinal()] == null) continue;
+
                 final Rect bounds = drawables[pos.ordinal()].getBounds();
 
                 if (pos == Position.LEFT
