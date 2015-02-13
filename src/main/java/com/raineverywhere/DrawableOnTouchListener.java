@@ -1,4 +1,4 @@
-package com.raineverywhere.drawableontouchlistener;
+package com.raineverywhere;
 
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 public abstract class DrawableOnTouchListener implements View.OnTouchListener {
     private Drawable[] drawables;
     private static final int DEFAULT_FUZZ = 10;
-    private int fuzz = DEFAULT_FUZZ;
+    private int fuzz;
 
     // Matches array indexes of array returned by TextView.getCompoundDrawables()
     private enum Position {
@@ -20,12 +20,10 @@ public abstract class DrawableOnTouchListener implements View.OnTouchListener {
     }
 
     public DrawableOnTouchListener(TextView view) {
-        super();
-        drawables = view.getCompoundDrawables();
+        this(view, DEFAULT_FUZZ);
     }
 
     public DrawableOnTouchListener(TextView view, int fuzz) {
-        super();
         this.drawables = view.getCompoundDrawables();
         this.fuzz = fuzz;
     }
@@ -61,14 +59,18 @@ public abstract class DrawableOnTouchListener implements View.OnTouchListener {
                         && y >= (v.getHeight() - bounds.height() - v.getPaddingBottom() - fuzz) && y <= (v.getHeight() - v.getPaddingBottom() + fuzz)) {
                     return onBottomDrawableTouch(event);
 
+                } else {
+                    return onDefaultTouch(event);
                 }
             }
         }
-        return false;
+
+        return onDefaultTouch(event);
     }
 
     public abstract boolean onLeftDrawableTouch(final MotionEvent event);
     public abstract boolean onTopDrawableTouch(final MotionEvent event);
     public abstract boolean onRightDrawableTouch(final MotionEvent event);
     public abstract boolean onBottomDrawableTouch(final MotionEvent event);
+    public abstract boolean onDefaultTouch(final MotionEvent event);
 }
