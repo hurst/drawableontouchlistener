@@ -4,10 +4,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 public abstract class DrawableOnTouchListener implements View.OnTouchListener {
-    private Drawable[] drawables;
     private static final int DEFAULT_FUZZ = 10;
     private int fuzz;
 
@@ -19,18 +19,28 @@ public abstract class DrawableOnTouchListener implements View.OnTouchListener {
         BOTTOM
     }
 
-    public DrawableOnTouchListener(TextView view) {
-        this(view, DEFAULT_FUZZ);
+    public DrawableOnTouchListener() {
+        this(DEFAULT_FUZZ);
     }
 
-    public DrawableOnTouchListener(TextView view, int fuzz) {
-        this.drawables = view.getCompoundDrawables();
+    public DrawableOnTouchListener(int fuzz) {
         this.fuzz = fuzz;
     }
 
     @Override
     public boolean onTouch(final View v, final MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN && drawables != null) {
+        boolean isCompoundButton = v instanceof CompoundButton;
+        boolean isTextView = v instanceof TextView;
+        if (event.getAction() == MotionEvent.ACTION_DOWN
+                && (isCompoundButton || isTextView) ) {
+
+            Drawable[] drawables;
+            if(isCompoundButton) {
+                drawables = ((CompoundButton)v).getCompoundDrawables();
+            } else {
+                drawables = ((TextView)v).getCompoundDrawables();
+            }
+
             final int x = (int) event.getX();
             final int y = (int) event.getY();
 
